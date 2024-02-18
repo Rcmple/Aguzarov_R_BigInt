@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/Aguzarov_R_BigInt.dir/main.cpp.o CMakeFiles/Aguzarov_R_BigInt.dir/BigInt.cpp.o -o Aguzarov_R_BigInt 

@@ -1,0 +1,249 @@
+#include "BigInt.h"
+//реализация унарных операций
+BigInt BigInt::operator - () const{
+    BigInt cur = *this;
+    cur.sign = !cur.sign;
+    return cur;
+}
+BigInt BigInt::operator + () const{
+    return *this;
+}
+
+//реализация логических операций
+bool operator==(const BigInt& first, const BigInt& second) {
+    if (first.sign != second.sign) return false;
+    if (first.Integer.size() == 1 && first.Integer[0] == 0) {
+        if (second.Integer.size() == 1 && second.Integer[0] == 0) return true;
+        return false;
+    }
+    if (second.Integer.empty()) {
+        if (first.Integer.empty() || first.Integer.size() == 1 && first.Integer[0] == 0) return true;
+        return false;
+    }
+    if (first.Integer.size() != second.Integer.size() || second.Decimal.size() != first.Decimal.size()) {
+        return false;
+    }
+    for (int i = 0; i < first.Integer.size(); i++) {
+        if (first.Integer[i] != second.Integer[i]) return false;
+    }
+    for (int i = 0; i < first.Decimal.size(); i++) {
+        if (first.Decimal[i] != second.Decimal[i]) return false;
+    }
+    return true;
+}
+
+bool operator < (const BigInt& first, const BigInt& second) {
+    if (first == second) return false;
+    if (first.sign){
+        if (second.sign) return (-second < -first);
+        else return true;
+    } else if(second.sign) return false;
+    else {
+        if (first.Integer.size() != second.Integer.size()) {
+            return first.Integer.size() < second.Integer.size();
+        } else{
+            for(int i = 0; i < first.Integer.size(); i++) {
+                if(first.Integer[i] != second.Integer[i]) {
+                    return first.Integer[i] < second.Integer[i];
+                }
+            }
+            for(int i = 0; i < min(first.Decimal.size(), second.Decimal.size()); i++) {
+                if(first.Decimal[i] != second.Decimal[i]) {
+                    return first.Decimal[i] < second.Decimal[i];
+                }
+            }
+        }
+        if(first.Decimal.size() < second.Decimal.size()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+bool operator <= (const BigInt& first, const BigInt& second) {
+    return (first < second || first == second);
+}
+
+bool operator > (const BigInt& first, const BigInt& second) {
+    return !(first <= second);
+}
+
+bool operator >= (const BigInt& first, const BigInt& second) {
+    return !(first < second);
+}
+
+bool operator != (const BigInt& first, const BigInt& second) {
+    return !(first == second);
+}
+
+
+BigInt operator + (const BigInt& first, const BigInt& second) {
+    if(first.sign) {
+        if(!second.sign) {
+            return -((-first) + (-second));
+        } else{
+            return (second - (-first));
+        }
+    } else if(second.sign) return (first - (-second));
+
+    BigInt sum_ans;
+    int Decimal_sum_left = 0;
+    int Decimal_sz_max = (int)max(first.Decimal.size(), second.Decimal.size());
+    sum_ans.Decimal.resize(Decimal_sz_max);
+    for(int i = Decimal_sz_max - 1; i >= 0; i--) {
+        if(i >= first.Decimal.size()) {
+            int sum_Decimal = (second.Decimal[i] + Decimal_sum_left);
+            sum_ans.Decimal[i] = sum_Decimal % 10;
+            Decimal_sum_left = sum_Decimal / 10;
+        }
+        else if (i >= second.Decimal.size()) {
+            int sum_Decimal = (first.Decimal[i] + Decimal_sum_left);
+            sum_ans.Decimal[i] = sum_Decimal % 10;
+            Decimal_sum_left = sum_Decimal / 10;
+        } else {
+            int sum_Decimal = (first.Decimal[i] + second.Decimal[i] + Decimal_sum_left);
+            sum_ans.Decimal[i] = sum_Decimal % 10;
+            Decimal_sum_left = sum_Decimal / 10;
+        }
+    }
+    int Integer_sz_max = (int)max(first.Integer.size(), second.Integer.size());
+    int prev_Integer_size = (int)first.Integer.size();
+    int prev_second_Integer_size = (int)second.Integer.size();
+    sum_ans.Integer.resize(Integer_sz_max);
+    int Integer_sum_left = Decimal_sum_left;
+    for(int i = 0; i < Integer_sz_max; i++) {
+        if(prev_Integer_size - i - 1 < 0) {
+            int Integer_sum = second.Integer[prev_second_Integer_size - i - 1] + Integer_sum_left;
+            sum_ans.Integer[Integer_sz_max - i - 1] = Integer_sum % 10;
+            Integer_sum_left = Integer_sum / 10;
+        } else if(prev_second_Integer_size - i - 1 < 0) {
+            int Integer_sum = first.Integer[prev_Integer_size - i - 1] + Integer_sum_left;
+            sum_ans.Integer[Integer_sz_max - i - 1] = Integer_sum % 10;
+            Integer_sum_left = Integer_sum / 10;
+
+        } else{
+            int Integer_sum = first.Integer[prev_Integer_size - i - 1] +
+                              second.Integer[prev_second_Integer_size - i - 1] + Integer_sum_left;
+            sum_ans.Integer[Integer_sz_max - i - 1] = Integer_sum % 10;
+            Integer_sum_left = Integer_sum / 10;
+        }
+    }
+    if(Integer_sum_left > 0){
+        sum_ans.Integer.insert(sum_ans.Integer.begin(), Integer_sum_left);
+    }
+    return sum_ans;
+}
+BigInt operator - (const BigInt& first, const BigInt& second) {
+    if(second.sign) return first + (-second);
+    else if(first.sign) return -((-first) + second);
+    else if(first < second) return -(second - first);
+    BigInt sub_ans;
+    //Decimal
+    int Decimal_sz_max = (int)max(first.Decimal.size(), second.Decimal.size());
+    sub_ans.Decimal.resize(Decimal_sz_max);
+    int Decimal_sub_left = 0;
+    for (int i = Decimal_sz_max - 1; i >= 0; i--) {
+        if(first.Decimal.size() - i - 1 < 0) {
+            int sub_Decimal = -second.Decimal[i] - Decimal_sub_left;
+            if(sub_Decimal < 0) {
+                sub_Decimal += 10;
+                Decimal_sub_left = 1;
+            } else{
+                Decimal_sub_left = 0;
+            }
+            sub_ans.Decimal[i] = sub_Decimal;
+        }
+        else if (second.Decimal.size() - i - 1 < 0) {
+            int sub_Decimal = first.Decimal[i] - Decimal_sub_left;
+            if(sub_Decimal < 0) {
+                sub_Decimal += 10;
+                Decimal_sub_left = 1;
+            } else{
+                Decimal_sub_left = 0;
+            }
+            sub_ans.Decimal[i] = sub_Decimal;
+        } else {
+            int sub_Decimal = first.Decimal[i] - second.Decimal[i] - Decimal_sub_left;
+            if(sub_Decimal < 0) {
+                sub_Decimal += 10;
+                Decimal_sub_left = 1;
+            } else{
+                Decimal_sub_left = 0;
+            }
+            sub_ans.Decimal[i] = sub_Decimal;
+        }
+    }
+    //Integer
+    int Integer_sz_max = (int)max(first.Integer.size(), second.Integer.size());
+    int prev_Integer_size = (int)first.Integer.size();
+    int prev_second_Integer_size = (int)second.Integer.size();
+    sub_ans.Integer.resize(Integer_sz_max);
+    int Integer_sub_left = Decimal_sub_left;
+    for(int i = 0; i < Integer_sz_max; i++) {
+        if(prev_Integer_size - i - 1 < 0) {
+            int sub_Integer = -second.Integer[prev_second_Integer_size - i - 1] - Integer_sub_left;
+            if(sub_Integer < 0) {
+                sub_Integer += 10;
+                Integer_sub_left = 1;
+            } else{
+                Integer_sub_left = 0;
+            }
+            sub_ans.Integer[Integer_sz_max - i - 1] = sub_Integer;
+        } else if(prev_second_Integer_size - i - 1 < 0) {
+            int sub_Integer = first.Integer[prev_Integer_size - i - 1] - Integer_sub_left;
+            if(sub_Integer < 0) {
+                sub_Integer += 10;
+                Integer_sub_left = 1;
+            } else {
+                Integer_sub_left = 0;
+            }
+            sub_ans.Integer[Integer_sz_max - i - 1] = sub_Integer;
+        } else{
+            int sub_Integer = first.Integer[prev_Integer_size - i - 1] - second.Integer[prev_second_Integer_size - i - 1] - Integer_sub_left;
+            if(sub_Integer < 0) {
+                sub_Integer += 10;
+                Integer_sub_left = 1;
+            } else {
+                Integer_sub_left = 0;
+            }
+            sub_ans.Integer[Integer_sz_max - i - 1] = sub_Integer;
+        }
+    }
+    return sub_ans;
+}
+BigInt BigInt:: operator += (const BigInt& second) {
+    return (*this = *this + second);
+}
+BigInt BigInt::operator -= (const BigInt& second) {
+    return (*this = *this - second);
+}
+// INPUT
+
+istream &operator>>(istream &is, BigInt &cur) {
+    string tmp;
+    is >> tmp;
+    cur = BigInt(tmp);
+    return is;
+}
+
+// OUTPUT
+
+ostream &operator<<(ostream &os, const BigInt &cur) {
+    if (cur.sign) {
+        os << '-';
+    }
+    for (auto &cur_digit_Integer: cur.Integer) {
+        os << cur_digit_Integer;
+    }
+    if (!cur.Decimal.empty()) {
+        if(cur.Decimal.size() != 1 && cur.Decimal[0] != 0) {
+            cout << ".";
+            for (auto &cur_digit_Decimal: cur.Decimal) {
+                os << cur_digit_Decimal;
+            }
+        }
+    }
+    return os;
+}
