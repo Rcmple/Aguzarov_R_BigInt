@@ -142,7 +142,9 @@ BigInt operator - (const BigInt& first, const BigInt& second) {
     sub_ans.Decimal.resize(Decimal_sz_max);
     int Decimal_sub_left = 0;
     for (int i = Decimal_sz_max - 1; i >= 0; i--) {
-        if(first.Decimal.size() - i - 1 < 0) {
+        int fir_d_sz = first.Decimal.size() - i - 1;
+        int sec_d_sz = second.Decimal.size() - i - 1;
+        if(fir_d_sz < 0) {
             int sub_Decimal = -second.Decimal[i] - Decimal_sub_left;
             if(sub_Decimal < 0) {
                 sub_Decimal += 10;
@@ -152,7 +154,7 @@ BigInt operator - (const BigInt& first, const BigInt& second) {
             }
             sub_ans.Decimal[i] = sub_Decimal;
         }
-        else if (second.Decimal.size() - i - 1 < 0) {
+        else if ((sec_d_sz - i - 1) < 0) {
             int sub_Decimal = first.Decimal[i] - Decimal_sub_left;
             if(sub_Decimal < 0) {
                 sub_Decimal += 10;
@@ -297,7 +299,7 @@ BigInt prev_divide(BigInt mid) {
             all_first.push_back(x);
         }
     }
-    for(int i = 0; i < 300; i++) {
+    for(int i = 0; i < 200; i++) {
         all_first.push_back(0);
     }
     BigInt ans;
@@ -312,6 +314,11 @@ BigInt prev_divide(BigInt mid) {
     return ans;
 }
 BigInt operator / (const BigInt &first, const BigInt &second) {
+    if(first.Integer.size() == 1 && first.Integer[0] == 0 && first.Decimal.size() == 1 && first.Decimal[0] == 0) {
+        BigInt ans;
+        ans.remove_zeros();
+        return ans;
+    }
     vector <int> all_first;
     all_first.reserve(first.Integer.size() + first.Decimal.size());
     for(auto &x : first.Integer) {
