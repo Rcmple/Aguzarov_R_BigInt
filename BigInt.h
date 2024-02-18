@@ -28,37 +28,44 @@ public:
             Decimal.push_back(s[cur_position] - '0');
             cur_position++;
         }
-        int last_zero_Integer = 0;
-        for(int i = 0; i < Integer.size(); i++) {
+        this->remove_zeros();
+    }
+    BigInt& remove_zeros() {
+        int cnt_Integer_zeros = 0;
+        for (int i = 0; i < Integer.size(); i++) {
             if(Integer[i] != 0) break;
-            last_zero_Integer = i + 1;
+            cnt_Integer_zeros = i + 1;
         }
-        for(int i = 0; i < last_zero_Integer; i++){
+        int cnt_Decimal_zeros = 0;
+        for (int i = (int) Decimal.size() - 1; i >= 0; i--) {
+            if(Decimal[i] != 0) break;
+            cnt_Decimal_zeros = (int) (Decimal.size() - i);
+        }
+        for (int i = 0; i < cnt_Integer_zeros; i++) {
             Integer.erase(Integer.begin());
         }
-        if(Integer.empty()){
-            Integer.push_back(0);
-        }
-        int last_zero_Decimal = 0;
-        for(int i = (int) Decimal.size() - 1; i >= 0; i--) {
-            if(Decimal[i] != 0) break;
-            last_zero_Decimal = Decimal.size() - i;
-        }
-        for(int i = 0; i < last_zero_Decimal; i++) {
+        for(int i = 0; i < cnt_Decimal_zeros; i++) {
             Decimal.pop_back();
         }
-        if(Decimal.empty()) Decimal.push_back(0);
+        if(Integer.empty()) {
+            Integer.push_back(0);
+        }
+        if(Decimal.empty()) {
+            Decimal.push_back(0);
+        }
+        return *this;
     }
-
     BigInt& operator = (const BigInt& other) = default;
     //Унарные операции
     BigInt operator += (const BigInt& second);
     BigInt operator -= (const BigInt& second);
+    BigInt operator *= (const BigInt& second);
     BigInt operator - () const;
     BigInt operator + () const;
 };
 BigInt operator + (const BigInt& first, const BigInt& second);
 BigInt operator - (const BigInt& first, const BigInt& second);
+BigInt operator * (const BigInt& first, const BigInt& second);
 istream& operator >> (istream& is, BigInt& cur);
 ostream& operator << (ostream& os, const BigInt& cur);
 bool operator < (const BigInt& first, const BigInt& second);

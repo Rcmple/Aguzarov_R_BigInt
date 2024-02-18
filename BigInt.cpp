@@ -213,11 +213,89 @@ BigInt operator - (const BigInt& first, const BigInt& second) {
     }
     return sub_ans;
 }
+BigInt operator * (const BigInt& first, const BigInt& second) {
+    vector <int> all_first;
+    all_first.reserve(first.Integer.size() + first.Decimal.size());
+    for(auto &x : first.Integer) {
+        all_first.push_back(x);
+    }
+    if(first.Decimal.size() > 1 || first.Decimal[0] != 0) {
+        for(auto &x : first.Decimal) {
+            all_first.push_back(x);
+        }
+    }
+    vector <int> all_second;
+    all_second.reserve(second.Integer.size() + second.Decimal.size());
+    for(auto &x : second.Integer) {
+        all_second.push_back(x);
+    }
+    if(second.Decimal.size() > 2 || second.Decimal[0] != 0) {
+        for(auto &x : second.Decimal) {
+            all_second.push_back(x);
+        }
+    }
+    int first_d_sz = 0;
+    if(first.Decimal.size() > 1 || first.Decimal[0] != 0) {
+        first_d_sz = (int) first.Decimal.size();
+    }
+    int second_d_sz = 0;
+    if(second.Decimal.size() > 1 || second.Decimal[0] != 0) {
+        second_d_sz = (int) second.Decimal.size();
+    }
+    int get_sub = first_d_sz - second_d_sz;
+    for(int i = 0; i < get_sub; i++) {
+        all_second.push_back(0);
+    }
+    get_sub = second_d_sz - first_d_sz;
+    for(int i = 0; i < get_sub; i++) {
+        all_first.push_back(0);
+    }
+    int all_sz = (int)(all_first.size() + all_second.size() + 2);
+    vector <int> result(all_sz, 0);
+    int df_pos = 0;
+    for(int i = (int) all_second.size() - 1; i >= 0; i--) {
+        if(all_second[i] == 0) {
+            df_pos++;
+            continue;
+        }
+        int mult_left = 0;
+        for(int j = (int) all_first.size() - 1; j >= 0; j--) {
+            int all_mult = all_second[i] * all_first[j] + mult_left;
+            int cur_index = (int)(all_sz - (all_first.size() - j) - df_pos);
+            result[cur_index] += all_mult % 10;
+            if(result[cur_index] > 9) {
+                result[cur_index - 1] += result[cur_index] / 10;
+                result[cur_index] %= 10;
+            }
+            mult_left = all_mult / 10;
+        }
+        if(mult_left > 0) {
+            result[all_sz - all_first.size() - 1 - df_pos] += mult_left;
+        }
+        df_pos++;
+    }
+    int sz_without_Decimal = (int) (result.size() - first_d_sz - second_d_sz - abs(first_d_sz - second_d_sz)) - 1;
+    BigInt all_res;
+    for(int i = 0; i <= sz_without_Decimal; i++) {
+        all_res.Integer.push_back(result[i]);
+    }
+    for(int i = sz_without_Decimal + 1; i < result.size(); i++) {
+        all_res.Decimal.push_back(result[i]);
+    }
+    all_res.remove_zeros();
+    if((first.sign && !second.sign) || (second.sign && !first.sign)) {
+        all_res.sign = true;
+    }
+    return all_res;
+}
 BigInt BigInt:: operator += (const BigInt& second) {
     return (*this = *this + second);
 }
 BigInt BigInt::operator -= (const BigInt& second) {
     return (*this = *this - second);
+}
+BigInt BigInt::operator *= (const BigInt& second) {
+    return (*this = *this * second);
 }
 // INPUT
 
@@ -238,7 +316,7 @@ ostream &operator<<(ostream &os, const BigInt &cur) {
         os << cur_digit_Integer;
     }
     if (!cur.Decimal.empty()) {
-        if(cur.Decimal.size() != 1 && cur.Decimal[0] != 0) {
+        if(cur.Decimal.size() > 2 || cur.Decimal[0] != 0) {
             cout << ".";
             for (auto &cur_digit_Decimal: cur.Decimal) {
                 os << cur_digit_Decimal;
