@@ -1,3 +1,0 @@
-/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/CMakeFiles/Aguzarov_R_BigInt.dir
-/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/CMakeFiles/edit_cache.dir
-/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/CMakeFiles/rebuild_cache.dir
