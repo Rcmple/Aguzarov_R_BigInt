@@ -297,7 +297,7 @@ BigInt prev_divide(BigInt mid) {
             all_first.push_back(x);
         }
     }
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 300; i++) {
         all_first.push_back(0);
     }
     BigInt ans;
@@ -377,8 +377,8 @@ ostream &operator<<(ostream &os, const BigInt &cur) {
     if (!cur.Decimal.empty()) {
         if(cur.Decimal.size() > 2 || cur.Decimal[0] != 0) {
             cout << ".";
-            for (auto &cur_digit_Decimal: cur.Decimal) {
-                os << cur_digit_Decimal;
+            for(int i = 0; i < cur.Decimal.size() && i < 300; i++) {
+                os << cur.Decimal[i];
             }
         }
     }

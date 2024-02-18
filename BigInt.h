@@ -54,14 +54,14 @@ public:
     }
     BigInt& get_max() {
         Integer.push_back(1);
-        for(int i = 0; i < 500; i++) {
+        for(int i = 0; i < 300; i++) {
             Integer.push_back(0);
         }
         return *this;
     }
     BigInt& esp() {
         Integer.push_back(0);
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 200; i++) {
             Decimal.push_back(0);
         }
         Decimal.push_back(1);
