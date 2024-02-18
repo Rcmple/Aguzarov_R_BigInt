@@ -52,6 +52,21 @@ public:
         }
         return *this;
     }
+    BigInt& get_max() {
+        Integer.push_back(1);
+        for(int i = 0; i < 5; i++) {
+            Integer.push_back(0);
+        }
+        return *this;
+    }
+    BigInt& esp() {
+        Integer.push_back(0);
+        for(int i = 0; i < 200; i++) {
+            Decimal.push_back(0);
+        }
+        Decimal.push_back(1);
+        return *this;
+    }
     BigInt& operator = (const BigInt& other) = default;
     //Унарные операции
     BigInt operator += (const BigInt& second);
@@ -71,6 +86,7 @@ public:
     friend bool operator <= (const BigInt& first, const BigInt& second);
     friend bool operator > (const BigInt& first, const BigInt& second);
     friend bool operator >= (const BigInt& first, const BigInt& second);
+    friend BigInt prev_divide(BigInt mid);
 private:
     vector<int> Integer;
     vector <int> Decimal;

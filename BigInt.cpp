@@ -129,6 +129,7 @@ BigInt operator + (const BigInt& first, const BigInt& second) {
     if(Integer_sum_left > 0){
         sum_ans.Integer.insert(sum_ans.Integer.begin(), Integer_sum_left);
     }
+    sum_ans.remove_zeros();
     return sum_ans;
 }
 BigInt operator - (const BigInt& first, const BigInt& second) {
@@ -207,6 +208,7 @@ BigInt operator - (const BigInt& first, const BigInt& second) {
             sub_ans.Integer[Integer_sz_max - i - 1] = sub_Integer;
         }
     }
+    sub_ans.remove_zeros();
     return sub_ans;
 }
 BigInt operator * (const BigInt& first, const BigInt& second) {
@@ -284,6 +286,31 @@ BigInt operator * (const BigInt& first, const BigInt& second) {
     }
     return all_res;
 }
+BigInt prev_divide(BigInt mid) {
+    vector <int> all_first;
+    all_first.reserve(mid.Integer.size() + mid.Decimal.size());
+    for(auto &x : mid.Integer) {
+        all_first.push_back(x);
+    }
+    if(mid.Decimal.size() > 1 || mid.Decimal[0] != 0) {
+        for(auto &x : mid.Decimal) {
+            all_first.push_back(x);
+        }
+    }
+    for(int i = 0; i < 200; i++) {
+        all_first.push_back(0);
+    }
+    BigInt ans;
+    long long cur_left_divide = 0;
+    for (int i = 0; i < all_first.size(); i++) {
+        long long cur_res = all_first[i] + cur_left_divide * 10;
+        if(i < mid.Integer.size()) ans.Integer.push_back((int)(cur_res / 2));
+        else ans.Decimal.push_back((int)(cur_res / 2));
+        cur_left_divide = cur_res % 2;
+    }
+    ans.remove_zeros();
+    return ans;
+}
 BigInt operator / (const BigInt &first, const BigInt &second) {
     vector <int> all_first;
     all_first.reserve(first.Integer.size() + first.Decimal.size());
@@ -295,51 +322,26 @@ BigInt operator / (const BigInt &first, const BigInt &second) {
             all_first.push_back(x);
         }
     }
-    vector <int> all_second;
-    all_second.reserve(second.Integer.size() + second.Decimal.size());
-    for(auto &x : second.Integer) {
-        all_second.push_back(x);
-    }
-    if(second.Decimal.size() > 2 || second.Decimal[0] != 0) {
-        for(auto &x : second.Decimal) {
-            all_second.push_back(x);
+    BigInt l;
+    l.get_max();
+    l.remove_zeros();
+    l = -l;
+    BigInt r;
+    r.get_max();
+    r.remove_zeros();
+    BigInt esp;
+    esp.esp();
+    while((r - l) > esp) {
+        BigInt mid;
+        mid.remove_zeros();
+        mid = prev_divide((r + l));
+        if((mid * second) < first) {
+            l = mid;
+        } else{
+            r = mid;
         }
     }
-    int first_d_sz = 0;
-    if(first.Decimal.size() > 1 || first.Decimal[0] != 0) {
-        first_d_sz = (int) first.Decimal.size();
-    }
-    int second_d_sz = 0;
-    if(second.Decimal.size() > 1 || second.Decimal[0] != 0) {
-        second_d_sz = (int) second.Decimal.size();
-    }
-    int get_sub = first_d_sz - second_d_sz;
-    for(int i = 0; i < get_sub; i++) {
-        all_second.push_back(0);
-    }
-    get_sub = second_d_sz - first_d_sz;
-    for(int i = 0; i < get_sub; i++) {
-        all_first.push_back(0);
-    }
-    int prev_first_sz = (int) all_first.size();
-    for(int i = 0; i < BigInt::accuracy; i++) {
-        all_first.push_back(0);
-    }
-    long long cur_left_divide = 0;
-    long long all_second_to_ll = 0;
-    for(int i = 0; i < all_second.size(); i++) {
-        all_second_to_ll *= 10;
-        all_second_to_ll += all_second[i];
-    }
-    BigInt ans;
-    for (int i = 0; i < all_first.size(); i++) {
-        long long cur_res = all_first[i] + cur_left_divide * 10;
-        if(i < prev_first_sz) ans.Integer.push_back((int)(cur_res / all_second_to_ll));
-        else ans.Decimal.push_back((int)(cur_res / all_second_to_ll));
-        cur_left_divide = cur_res % all_second_to_ll;
-    }
-    ans.remove_zeros();
-    return ans;
+    return r;
 }
 BigInt BigInt::operator/=(const BigInt &second) {
     return (*this = *this / second);
