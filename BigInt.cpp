@@ -8,14 +8,10 @@ BigInt BigInt::operator - () const{
 BigInt BigInt::operator + () const{
     return *this;
 }
-
+unsigned BigInt :: accuracy = 10;
 //реализация логических операций
 bool operator==(const BigInt& first, const BigInt& second) {
     if (first.sign != second.sign) return false;
-    if (first.Integer.size() == 1 && first.Integer[0] == 0) {
-        if (second.Integer.size() == 1 && second.Integer[0] == 0) return true;
-        return false;
-    }
     if (second.Integer.empty()) {
         if (first.Integer.empty() || first.Integer.size() == 1 && first.Integer[0] == 0) return true;
         return false;
@@ -78,7 +74,7 @@ bool operator != (const BigInt& first, const BigInt& second) {
     return !(first == second);
 }
 
-
+//Реализация бинарных операций
 BigInt operator + (const BigInt& first, const BigInt& second) {
     if(first.sign) {
         if(!second.sign) {
@@ -288,6 +284,66 @@ BigInt operator * (const BigInt& first, const BigInt& second) {
     }
     return all_res;
 }
+BigInt operator / (const BigInt &first, const BigInt &second) {
+    vector <int> all_first;
+    all_first.reserve(first.Integer.size() + first.Decimal.size());
+    for(auto &x : first.Integer) {
+        all_first.push_back(x);
+    }
+    if(first.Decimal.size() > 1 || first.Decimal[0] != 0) {
+        for(auto &x : first.Decimal) {
+            all_first.push_back(x);
+        }
+    }
+    vector <int> all_second;
+    all_second.reserve(second.Integer.size() + second.Decimal.size());
+    for(auto &x : second.Integer) {
+        all_second.push_back(x);
+    }
+    if(second.Decimal.size() > 2 || second.Decimal[0] != 0) {
+        for(auto &x : second.Decimal) {
+            all_second.push_back(x);
+        }
+    }
+    int first_d_sz = 0;
+    if(first.Decimal.size() > 1 || first.Decimal[0] != 0) {
+        first_d_sz = (int) first.Decimal.size();
+    }
+    int second_d_sz = 0;
+    if(second.Decimal.size() > 1 || second.Decimal[0] != 0) {
+        second_d_sz = (int) second.Decimal.size();
+    }
+    int get_sub = first_d_sz - second_d_sz;
+    for(int i = 0; i < get_sub; i++) {
+        all_second.push_back(0);
+    }
+    get_sub = second_d_sz - first_d_sz;
+    for(int i = 0; i < get_sub; i++) {
+        all_first.push_back(0);
+    }
+    int prev_first_sz = (int) all_first.size();
+    for(int i = 0; i < BigInt::accuracy; i++) {
+        all_first.push_back(0);
+    }
+    long long cur_left_divide = 0;
+    long long all_second_to_ll = 0;
+    for(int i = 0; i < all_second.size(); i++) {
+        all_second_to_ll *= 10;
+        all_second_to_ll += all_second[i];
+    }
+    BigInt ans;
+    for (int i = 0; i < all_first.size(); i++) {
+        long long cur_res = all_first[i] + cur_left_divide * 10;
+        if(i < prev_first_sz) ans.Integer.push_back((int)(cur_res / all_second_to_ll));
+        else ans.Decimal.push_back((int)(cur_res / all_second_to_ll));
+        cur_left_divide = cur_res % all_second_to_ll;
+    }
+    ans.remove_zeros();
+    return ans;
+}
+BigInt BigInt::operator/=(const BigInt &second) {
+    return (*this = *this / second);
+}
 BigInt BigInt:: operator += (const BigInt& second) {
     return (*this = *this + second);
 }
@@ -297,6 +353,7 @@ BigInt BigInt::operator -= (const BigInt& second) {
 BigInt BigInt::operator *= (const BigInt& second) {
     return (*this = *this * second);
 }
+
 // INPUT
 
 istream &operator>>(istream &is, BigInt &cur) {
@@ -325,3 +382,6 @@ ostream &operator<<(ostream &os, const BigInt &cur) {
     }
     return os;
 }
+
+
+

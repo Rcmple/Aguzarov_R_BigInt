@@ -5,10 +5,7 @@
 using namespace std;
 class BigInt{
 public:
-    vector<int> Integer;
-    vector <int> Decimal;
-    bool sign = false;
-
+    static unsigned accuracy;
     BigInt() = default;
     explicit BigInt(const string& s){
         int cur_position = 0;
@@ -60,17 +57,23 @@ public:
     BigInt operator += (const BigInt& second);
     BigInt operator -= (const BigInt& second);
     BigInt operator *= (const BigInt& second);
+    BigInt operator /= (const BigInt& second);
     BigInt operator - () const;
     BigInt operator + () const;
+    friend BigInt operator + (const BigInt& first, const BigInt& second);
+    friend BigInt operator - (const BigInt& first, const BigInt& second);
+    friend BigInt operator * (const BigInt& first, const BigInt& second);
+    friend BigInt operator / (const BigInt& first, const BigInt& second);
+    friend istream& operator >> (istream& is, BigInt& cur);
+    friend ostream& operator << (ostream& os, const BigInt& cur);
+    friend bool operator < (const BigInt& first, const BigInt& second);
+    friend bool operator == (const BigInt& first, const BigInt& second);
+    friend bool operator <= (const BigInt& first, const BigInt& second);
+    friend bool operator > (const BigInt& first, const BigInt& second);
+    friend bool operator >= (const BigInt& first, const BigInt& second);
+private:
+    vector<int> Integer;
+    vector <int> Decimal;
+    bool sign = false;
 };
-BigInt operator + (const BigInt& first, const BigInt& second);
-BigInt operator - (const BigInt& first, const BigInt& second);
-BigInt operator * (const BigInt& first, const BigInt& second);
-istream& operator >> (istream& is, BigInt& cur);
-ostream& operator << (ostream& os, const BigInt& cur);
-bool operator < (const BigInt& first, const BigInt& second);
-bool operator == (const BigInt& first, const BigInt& second);
-bool operator <= (const BigInt& first, const BigInt& second);
-bool operator > (const BigInt& first, const BigInt& second);
-bool operator >= (const BigInt& first, const BigInt& second);
 #endif //AGUZAROV_R_BIGINT_BIGINT_H
