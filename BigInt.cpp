@@ -297,7 +297,7 @@ BigInt prev_divide(BigInt mid) {
             all_first.push_back(x);
         }
     }
-    for(int i = 0; i < 200; i++) {
+    for(int i = 0; i < 100; i++) {
         all_first.push_back(0);
     }
     BigInt ans;
