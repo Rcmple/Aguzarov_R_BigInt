@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -g -shared -Wl,-soname,libBigInt.so -o libBigInt.so CMakeFiles/BigInt.dir/BigInt.cpp.o 
