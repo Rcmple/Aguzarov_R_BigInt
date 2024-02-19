@@ -1,0 +1,6 @@
+/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/CMakeFiles/main.dir
+/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/BigInt/CMakeFiles/BigInt.dir
+/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/BigInt/CMakeFiles/edit_cache.dir
+/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/BigInt/CMakeFiles/rebuild_cache.dir

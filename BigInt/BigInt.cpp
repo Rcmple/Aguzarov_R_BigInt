@@ -8,7 +8,24 @@ BigInt BigInt::operator - () const{
 BigInt BigInt::operator + () const{
     return *this;
 }
-unsigned BigInt :: accuracy = 10;
+BigInt BigInt::operator++() {
+    *this += BigInt(1);
+    return *this;
+}
+BigInt BigInt::operator++(int) {
+    BigInt old = *this;
+    operator++();
+    return old;
+}
+BigInt BigInt::operator--() {
+    *this -= BigInt(1);
+    return *this;
+}
+BigInt BigInt::operator--(int) {
+    BigInt old = *this;
+    operator--();
+    return old;
+}
 //реализация логических операций
 bool operator==(const BigInt& first, const BigInt& second) {
     if (first.sign != second.sign) return false;
@@ -142,8 +159,8 @@ BigInt operator - (const BigInt& first, const BigInt& second) {
     sub_ans.Decimal.resize(Decimal_sz_max);
     int Decimal_sub_left = 0;
     for (int i = Decimal_sz_max - 1; i >= 0; i--) {
-        int fir_d_sz = first.Decimal.size() - i - 1;
-        int sec_d_sz = second.Decimal.size() - i - 1;
+        int fir_d_sz = (int) (first.Decimal.size() - i - 1);
+        int sec_d_sz = (int) (second.Decimal.size() - i - 1);
         if(fir_d_sz < 0) {
             int sub_Decimal = -second.Decimal[i] - Decimal_sub_left;
             if(sub_Decimal < 0) {
@@ -299,7 +316,7 @@ BigInt prev_divide(BigInt mid) {
             all_first.push_back(x);
         }
     }
-    for(int i = 0; i < 200; i++) {
+    for(int i = 0; i < 100; i++) {
         all_first.push_back(0);
     }
     BigInt ans;
@@ -315,8 +332,11 @@ BigInt prev_divide(BigInt mid) {
 }
 BigInt operator / (const BigInt &first, const BigInt &second) {
     if(first.Integer.size() == 1 && first.Integer[0] == 0 && first.Decimal.size() == 1 && first.Decimal[0] == 0) {
-        BigInt ans;
-        ans.remove_zeros();
+        BigInt ans(0);
+        return ans;
+    }
+    if(second.Integer.size() == 1 && second.Integer[0] == 0 && second.Decimal.size() == 1 && second.Decimal[0] == 0) {
+        BigInt ans(0);
         return ans;
     }
     vector <int> all_first;
@@ -350,9 +370,6 @@ BigInt operator / (const BigInt &first, const BigInt &second) {
     }
     return r;
 }
-BigInt BigInt::operator/=(const BigInt &second) {
-    return (*this = *this / second);
-}
 BigInt BigInt:: operator += (const BigInt& second) {
     return (*this = *this + second);
 }
@@ -362,7 +379,9 @@ BigInt BigInt::operator -= (const BigInt& second) {
 BigInt BigInt::operator *= (const BigInt& second) {
     return (*this = *this * second);
 }
-
+BigInt BigInt::operator/=(const BigInt &second) {
+    return (*this = *this / second);
+}
 // INPUT
 
 istream &operator>>(istream &is, BigInt &cur) {
@@ -384,13 +403,10 @@ ostream &operator<<(ostream &os, const BigInt &cur) {
     if (!cur.Decimal.empty()) {
         if(cur.Decimal.size() > 2 || cur.Decimal[0] != 0) {
             cout << ".";
-            for(int i = 0; i < cur.Decimal.size() && i < 300; i++) {
+            for(int i = 0; i < cur.Decimal.size() && i < BigInt::accuracy; i++) {
                 os << cur.Decimal[i];
             }
         }
     }
     return os;
 }
-
-
-

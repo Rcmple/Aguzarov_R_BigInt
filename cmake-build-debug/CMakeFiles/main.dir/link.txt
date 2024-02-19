@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/main.dir/main.cpp.o -o main  -Wl,-rpath,/mnt/c/Users/shayd/CLionProjects/Aguzarov_R_BigInt/cmake-build-debug/BigInt BigInt/libBigInt.so 

@@ -7,6 +7,11 @@ class BigInt{
 public:
     static unsigned accuracy;
     BigInt() = default;
+    explicit BigInt(int cur) : BigInt(to_string(cur)) {};
+    explicit BigInt(unsigned cur) : BigInt(to_string(cur)) {};
+    explicit BigInt(long long cur) : BigInt(to_string(cur)) {};
+    explicit BigInt(unsigned long long cur) : BigInt(to_string(cur)) {};
+    explicit BigInt(double cur) : BigInt(to_string(cur)) {};
     explicit BigInt(const string& s){
         int cur_position = 0;
         if(s[0] < '0' || s[0] > '9') {
@@ -54,27 +59,40 @@ public:
     }
     BigInt& get_max() {
         Integer.push_back(1);
-        for(int i = 0; i < 150; i++) {
+        for(int i = 0; i < 100; i++) {
             Integer.push_back(0);
         }
         return *this;
     }
     BigInt& esp() {
         Integer.push_back(0);
-        for(int i = 0; i < 300; i++) {
+        for(int i = 0; i < 100 && i < BigInt::accuracy; i++) {
             Decimal.push_back(0);
         }
         Decimal.push_back(1);
         return *this;
     }
+    BigInt& pow(long long k) {
+        BigInt ans(*this);
+        *this = BigInt(1);
+        while(k != 0) {
+            if(k % 2 == 1) *this *= ans;
+            ans *= ans;
+            k /= 2;
+        }
+        return *this;
+    }
     BigInt& operator = (const BigInt& other) = default;
-    //Унарные операции
     BigInt operator += (const BigInt& second);
     BigInt operator -= (const BigInt& second);
     BigInt operator *= (const BigInt& second);
     BigInt operator /= (const BigInt& second);
     BigInt operator - () const;
     BigInt operator + () const;
+    BigInt operator ++ ();
+    BigInt operator ++ (int);
+    BigInt operator -- ();
+    BigInt operator -- (int);
     friend BigInt operator + (const BigInt& first, const BigInt& second);
     friend BigInt operator - (const BigInt& first, const BigInt& second);
     friend BigInt operator * (const BigInt& first, const BigInt& second);
