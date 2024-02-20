@@ -5,7 +5,7 @@ using namespace std;
 unsigned BigInt :: accuracy;
 void get_PI() {
     BigInt Pi(0);
-    for(int k = 0; k < BigInt::accuracy / 2 + 2; k++) {;
+    for(int k = 0; k < BigInt::accuracy; k++) {
         BigInt sec(BigInt(4) / BigInt(8 * k + 1));
         BigInt third(BigInt(2) / BigInt(8 * k + 4));
         BigInt fourth(BigInt(1) / BigInt(8 * k + 5));
@@ -15,7 +15,7 @@ void get_PI() {
     cout << Pi << '\n';
 }
 int main() {
-    cout << "This program calculates the value of Pi to the number of decimal places, enter this number:";
+    cout << "This programm calculates the value of Pi to the number of decimal places, enter this number :";
     unsigned n;
     cin >> n;
     auto start_time = std::chrono::high_resolution_clock::now();

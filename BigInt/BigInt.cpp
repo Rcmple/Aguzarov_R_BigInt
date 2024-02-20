@@ -8,7 +8,7 @@ BigInt BigInt::operator - () const{
 BigInt BigInt::operator + () const{
     return *this;
 }
-BigInt BigInt::operator++() {
+BigInt& BigInt::operator++() {
     *this += BigInt(1);
     return *this;
 }
@@ -17,7 +17,7 @@ BigInt BigInt::operator++(int) {
     operator++();
     return old;
 }
-BigInt BigInt::operator--() {
+BigInt& BigInt::operator--() {
     *this -= BigInt(1);
     return *this;
 }
@@ -370,16 +370,19 @@ BigInt operator / (const BigInt &first, const BigInt &second) {
     }
     return r;
 }
-BigInt BigInt:: operator += (const BigInt& second) {
+BigInt operator ""_f(const char* s) {
+    return BigInt(s);
+}
+BigInt& BigInt:: operator += (const BigInt& second) {
     return (*this = *this + second);
 }
-BigInt BigInt::operator -= (const BigInt& second) {
+BigInt& BigInt::operator -= (const BigInt& second) {
     return (*this = *this - second);
 }
-BigInt BigInt::operator *= (const BigInt& second) {
+BigInt& BigInt::operator *= (const BigInt& second) {
     return (*this = *this * second);
 }
-BigInt BigInt::operator/=(const BigInt &second) {
+BigInt& BigInt::operator/=(const BigInt &second) {
     return (*this = *this / second);
 }
 // INPUT

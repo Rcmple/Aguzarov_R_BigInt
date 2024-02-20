@@ -57,21 +57,6 @@ public:
         }
         return *this;
     }
-    BigInt& get_max() {
-        Integer.push_back(1);
-        for(int i = 0; i < 100; i++) {
-            Integer.push_back(0);
-        }
-        return *this;
-    }
-    BigInt& esp() {
-        Integer.push_back(0);
-        for(int i = 0; i < 100 && i < BigInt::accuracy; i++) {
-            Decimal.push_back(0);
-        }
-        Decimal.push_back(1);
-        return *this;
-    }
     BigInt& pow(long long k) {
         BigInt ans(*this);
         *this = BigInt(1);
@@ -82,16 +67,32 @@ public:
         }
         return *this;
     }
+    string to_str() {
+        string res;
+        if(sign) {
+            res.push_back('-');
+        }
+        for(auto &x : Integer) {
+            res.push_back(x + '0');
+        }
+        if(Decimal.size() > 1 || Decimal[0] != 0) {
+            res.push_back('.');
+            for(int i = 0; i < Decimal.size() && i < 10; i++) {
+                res.push_back(Decimal[i] + '0');
+            }
+        }
+        return res;
+    }
     BigInt& operator = (const BigInt& other) = default;
-    BigInt operator += (const BigInt& second);
-    BigInt operator -= (const BigInt& second);
-    BigInt operator *= (const BigInt& second);
-    BigInt operator /= (const BigInt& second);
+    BigInt& operator += (const BigInt& second);
+    BigInt& operator -= (const BigInt& second);
+    BigInt& operator *= (const BigInt& second);
+    BigInt& operator /= (const BigInt& second);
     BigInt operator - () const;
     BigInt operator + () const;
-    BigInt operator ++ ();
+    BigInt& operator ++ ();
     BigInt operator ++ (int);
-    BigInt operator -- ();
+    BigInt& operator -- ();
     BigInt operator -- (int);
     friend BigInt operator + (const BigInt& first, const BigInt& second);
     friend BigInt operator - (const BigInt& first, const BigInt& second);
@@ -109,5 +110,21 @@ private:
     vector<int> Integer;
     vector <int> Decimal;
     bool sign = false;
+    BigInt& esp() {
+        Integer.push_back(0);
+        for(int i = 0; i < BigInt::accuracy + 10; i++) {
+            Decimal.push_back(0);
+        }
+        Decimal.push_back(1);
+        return *this;
+    }
+    BigInt& get_max() {
+        Integer.push_back(1);
+        for(int i = 0; i < 30; i++) {
+            Integer.push_back(0);
+        }
+        return *this;
+    }
 };
+BigInt operator ""_f(const char* );
 #endif //AGUZAROV_R_BIGINT_BIGINT_H

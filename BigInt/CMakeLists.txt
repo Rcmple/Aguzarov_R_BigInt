@@ -1,3 +1,2 @@
-file(GLOB_RECURSE SOURCES "*.cpp")
-add_library(BigInt SHARED ${SOURCES})
-target_include_directories(BigInt PUBLIC BigInt.h)
+add_library(BigInt SHARED BigInt.cpp)
+target_include_directories(BigInt PUBLIC BigInt)
