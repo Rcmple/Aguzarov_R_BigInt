@@ -32,31 +32,6 @@ public:
         }
         this->remove_zeros();
     }
-    BigInt& remove_zeros() {
-        int cnt_Integer_zeros = 0;
-        for (int i = 0; i < Integer.size(); i++) {
-            if(Integer[i] != 0) break;
-            cnt_Integer_zeros = i + 1;
-        }
-        int cnt_Decimal_zeros = 0;
-        for (int i = (int) Decimal.size() - 1; i >= 0; i--) {
-            if(Decimal[i] != 0) break;
-            cnt_Decimal_zeros = (int) (Decimal.size() - i);
-        }
-        for (int i = 0; i < cnt_Integer_zeros; i++) {
-            Integer.erase(Integer.begin());
-        }
-        for(int i = 0; i < cnt_Decimal_zeros; i++) {
-            Decimal.pop_back();
-        }
-        if(Integer.empty()) {
-            Integer.push_back(0);
-        }
-        if(Decimal.empty()) {
-            Decimal.push_back(0);
-        }
-        return *this;
-    }
     BigInt& pow(long long k) {
         BigInt ans(*this);
         *this = BigInt(1);
@@ -83,7 +58,6 @@ public:
         }
         return res;
     }
-    BigInt& operator = (const BigInt& other) = default;
     BigInt& operator += (const BigInt& second);
     BigInt& operator -= (const BigInt& second);
     BigInt& operator *= (const BigInt& second);
@@ -112,7 +86,7 @@ private:
     bool sign = false;
     BigInt& esp() {
         Integer.push_back(0);
-        for(int i = 0; i < BigInt::accuracy + 10; i++) {
+        for(int i = 0; i < BigInt::accuracy + 3; i++) {
             Decimal.push_back(0);
         }
         Decimal.push_back(1);
@@ -120,8 +94,33 @@ private:
     }
     BigInt& get_max() {
         Integer.push_back(1);
-        for(int i = 0; i < 30; i++) {
+        for(int i = 0; i < 20; i++) {
             Integer.push_back(0);
+        }
+        return *this;
+    }
+    BigInt& remove_zeros() {
+        int cnt_Integer_zeros = 0;
+        for (int i = 0; i < Integer.size(); i++) {
+            if(Integer[i] != 0) break;
+            cnt_Integer_zeros = i + 1;
+        }
+        int cnt_Decimal_zeros = 0;
+        for (int i = (int) Decimal.size() - 1; i >= 0; i--) {
+            if(Decimal[i] != 0) break;
+            cnt_Decimal_zeros = (int) (Decimal.size() - i);
+        }
+        for (int i = 0; i < cnt_Integer_zeros; i++) {
+            Integer.erase(Integer.begin());
+        }
+        for(int i = 0; i < cnt_Decimal_zeros; i++) {
+            Decimal.pop_back();
+        }
+        if(Integer.empty()) {
+            Integer.push_back(0);
+        }
+        if(Decimal.empty()) {
+            Decimal.push_back(0);
         }
         return *this;
     }

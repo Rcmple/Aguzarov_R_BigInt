@@ -1,4 +1,4 @@
-#include "BigInt/BigInt.h"
+#include "../BigInt/BigInt.h"
 #include <gtest/gtest.h>
 TEST(mult, justmult){
 BigInt a(to_string(1324234678));

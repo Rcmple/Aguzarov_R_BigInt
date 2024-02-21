@@ -1,4 +1,4 @@
-#include "BigInt/BigInt.h"
+#include "../BigInt/BigInt.h"
 #include <gtest/gtest.h>
 unsigned BigInt::accuracy = 10;
 

@@ -7,10 +7,11 @@ add_subdirectory(BigInt)
 add_subdirectory(googletest)
 include(GoogleTest)
 add_executable(tests
-        divide_tests.cpp
-        mult_tests.cpp
-        plus_tests.cpp
-        sub_tests.cpp)
+        all_tests/divide_tests.cpp
+        all_tests/mult_tests.cpp
+        all_tests/plus_tests.cpp
+        all_tests/sub_tests.cpp
+        all_tests/comp.cpp)
 enable_testing()
 add_executable(main main.cpp)
 target_link_libraries(main BigInt)
